@@ -9,8 +9,7 @@ define({
 		"logOut": "Выйти",
 		"signOut": "Удалить свой аккаунт",
 		"connectionState": "Состояние соединения: ",
-		"сonnectNest": "Подключиться",
-		"disconnectNest": "Отключить Nest"
+		"getData": "Получить данные от Nest"
 	}
 
 });

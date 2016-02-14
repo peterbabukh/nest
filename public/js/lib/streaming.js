@@ -25,14 +25,14 @@ if (!window.EventSource) {
 // Get auth token from cookie.
 var token = Cookies.get('nest_token');
 
-
+/*
 if (token) {
-  $('#signin-btn').text('Sign out').attr('href', '/auth/logout');
+  $('#signin-btn').text('Sign out').attr('href', '/nest/logout');
 } else {
   $('#signin-btn').text('Sign in to Nest');
   throw new Error('You are not signed in. Please sign in.');
 }
-
+*/
 /**
  * Create an EventSource object which handles the long-running GET request to
  * the Nest REST Streaming API. The EventSource object emits events as they are
@@ -47,6 +47,12 @@ var source = new EventSource(NEST_API_URL + '?auth=' + token);
 source.addEventListener('put', function(e) {
 
   var data = JSON.parse(e.data).data || {};
+
+console.log(data);
+var nestData = document.createElement('DIV');
+nestData.appendChild( document.createTextNode( data ) );
+document.body.appendChild(nestData);
+
   var devices = data.devices || {};
   var thermostats = devices.thermostats || {};
   var smokeAlarms = devices.smoke_co_alarms || {};
