@@ -1,0 +1,24 @@
+{
+  "name": "nest",
+  "description": "",
+  "main": "server.js",
+  "authors": [
+    "Peter Babukh"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "nodejs",
+    "project",
+    "nest"
+  ],
+  "homepage": "https://github.com/peterbabukh/nest",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title><%= t('title') %></title>
+    <link rel="stylesheet" type="text/css" href="/css/nest.css" />
+    <!-- Google reCaptcha -->
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+</head>
+
+<body>
+<div class="layout-box">
+    <div class="content-box">
+        <form name="loginForm" class="loginForm" action="/login" method="post">
+            <div>
+                <%= t('text.itIsLoginPage') %>
+            </div>
+            <div>
+                <% if (messages && messages.error) { %>
+                <div class="msg-wrong runningBorder"><%= messages.error %></div>
+                <% } else if (messages && messages.info) { %>
+                <div class="msg-right runningBorder"><%= messages.info %></div>
+                <% } %>
+            </div>
+            <div>
+                <label class="login-label"><%= t('text.password') %><input type="password" name="password"
+                                                                           required minlength="6"  pattern=".{6,50}" title="<%- t('text.inputLength') %>" maxlength="50" placeholder="password"/></label>
+            </div>
+            <div>
+                <a href="/forgot"><%= t('text.forgotPassword') %></a>
+            </div>
+            <div>
+                <label class="login-label"><%= t('text.email') %>
+                    <input type="email" name="email" required placeholder="email" /></label>
+            </div>
+            <div class="g-recaptcha" data-sitekey="6Ld6vBQTAAAAABu1v2KbVv9ZfnpqZxA1A1aHFA5y"></div>
+            <div>
+                <input class="login-submit" type="submit" value='<%= t("nav.submit") %>' />
+            </div>
+            <br />
+            <hr />
+            <div>
+                <a href="/signup"><%= t('nav.signUp') %></a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

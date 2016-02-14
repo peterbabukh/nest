@@ -1,0 +1,413 @@
+@charset "utf-8";
+
+
+
+@defaultBorderRadius: 6px;
+.BoxBorderRadius(@radius: @defaultBorderRadius) {
+    -webkit-border-radius: @radius;
+    -moz-border-radius: @radius;
+    -o-border-radius: @radius;
+    border-radius: @radius;
+}
+
+@BackgroundColor: white;
+@lightGreen: #E0FFD1;;
+@darkGreen: #008000;
+@lightRed: #FFDCDC;
+@darkRed: #ff0000;
+@nestBlue: #00AFD8;
+
+
+.ButtonStyles() {
+    font-size: @defaultFontSize;
+    font-weight: bold;
+    background-color: @nestBlue;
+    color: white;
+    .ThickColoredBorder();
+    text-decoration: none;
+    cursor: pointer;
+}
+.ButtonHoverStyles() {
+    background-color: lighten(@nestBlue, 10%);
+    .boxShadow();
+}
+
+@defaultBorderWidth: 1px;
+@defaultBorderStyle: solid;
+@maroonColor: rgba(128, 0, 0, 1);
+@lightMaroonColor: rgba(128, 0, 0, 0.1);
+
+.ColoredBorder(@width:@defaultBorderWidth; @style:@defaultBorderStyle; @color:@nestBlue;) {
+    @defaultColoredBorder: @width @style @color;
+    border: @defaultColoredBorder;
+}
+.ThickColoredBorder(@width:@defaultBorderWidth; @style:@defaultBorderStyle; @color:@nestBlue;) {
+    border: @width * 2 @style @color;
+}
+
+@defaultFontSize: 16px;
+@adaptiveFontSize: @defaultFontSize * 0.75;
+@defaultInputFontSize: 30px;
+@adaptiveInputFontSize: 20px;
+
+@imgRoot: '../assets/img';
+
+.Adaptive(@minWidth; @maxWidth; @rules) {
+    @media screen and (min-width: @minWidth) and (max-width: @maxWidth) {
+        @rules();
+    }
+}
+
+@shadowColor: gray;
+.boxShadow(@h:0; @v:8px; @blur:15px; @color:@shadowColor) {
+    box-shadow: @h @v @blur @color;
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    &:after,
+    &:before {
+        box-sizing: border-box;
+    }
+}
+
+.layout-box {
+    font-family: Georgia, Verdana, sans-serif;
+    font-size: @defaultFontSize;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+
+
+}
+
+.content-box {
+    min-height: 500px;
+    width: 900px;
+    margin: 70px auto;
+
+    // imitate outline-offset for IE support
+    background-color: @BackgroundColor;
+    border: 20px solid @BackgroundColor;
+    outline: 20px solid gainsboro;
+
+    text-align: center;
+
+}
+
+
+.layout-box button {
+    .ButtonStyles();
+    height: 40px;
+    width: 200px;
+    padding: 5px;
+    .BoxBorderRadius();
+
+    &:hover {
+        .ButtonHoverStyles();
+    }
+
+}
+
+
+/* links styles */
+
+a {
+    display: inline-block;
+    font-family: Arial, Verdana, sans-serif;
+    .ButtonStyles();
+    .BoxBorderRadius();
+    padding: 5px;
+
+    &:hover {
+        .ButtonHoverStyles();
+    }
+}
+
+
+
+/* login page styles */
+@loginFormWidth: 250px;
+
+.loginForm,
+.signupForm {
+    width: @loginFormWidth;
+    margin: 0 auto;
+
+    &  div {
+        margin: 20px 0 0;
+    }
+
+    & .login-submit {
+        height: 40px;
+        .ButtonStyles();
+        .BoxBorderRadius();
+
+        &:hover {
+            .ButtonHoverStyles();
+        }
+    }
+
+    & label,
+    & a,
+    & input {
+        display: block;
+        width: 100%;
+        font-size: @defaultFontSize;
+        padding: 3px;
+        cursor: pointer;
+    }
+
+    & a {
+        .boxShadow();
+    }
+
+    & input {
+        height: 40px;
+        .ColoredBorder();
+        .boxShadow();
+    }
+
+    & label {
+        text-align: left;
+    }
+}
+
+
+
+/* application header styles */
+
+.app-header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-height: 40px;
+    text-align: right;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-right: 20px;
+
+}
+
+.connection-state {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    &>img {
+        height: 25px;
+    }
+
+    &>* {
+        margin-left: 10px;
+    }
+}
+
+
+// express-flash styles
+
+.flash-message() {
+    padding: 5px;
+    .BoxBorderRadius();
+}
+
+.msg-right {
+    .flash-message();
+    background-color: @lightGreen;
+    color: @darkGreen;
+}
+
+.msg-wrong {
+    .flash-message();
+    background-color: @lightRed;
+    color: @darkRed;
+}
+
+/* CSS spinner */
+
+#floatingCirclesG{
+    position:relative;
+    top: 175px;
+    width:125px;
+    height:125px;
+    margin:auto;
+    transform:scale(0.6);
+    -o-transform:scale(0.6);
+    -ms-transform:scale(0.6);
+    -webkit-transform:scale(0.6);
+    -moz-transform:scale(0.6);
+}
+
+.f_circleG{
+    position:absolute;
+    background-color:rgb(255,255,255);
+    height:22px;
+    width:22px;
+    border-radius:12px;
+    -o-border-radius:12px;
+    -ms-border-radius:12px;
+    -webkit-border-radius:12px;
+    -moz-border-radius:12px;
+    animation-name:f_fadeG;
+    -o-animation-name:f_fadeG;
+    -ms-animation-name:f_fadeG;
+    -webkit-animation-name:f_fadeG;
+    -moz-animation-name:f_fadeG;
+    animation-duration:1.2s;
+    -o-animation-duration:1.2s;
+    -ms-animation-duration:1.2s;
+    -webkit-animation-duration:1.2s;
+    -moz-animation-duration:1.2s;
+    animation-iteration-count:infinite;
+    -o-animation-iteration-count:infinite;
+    -ms-animation-iteration-count:infinite;
+    -webkit-animation-iteration-count:infinite;
+    -moz-animation-iteration-count:infinite;
+    animation-direction:normal;
+    -o-animation-direction:normal;
+    -ms-animation-direction:normal;
+    -webkit-animation-direction:normal;
+    -moz-animation-direction:normal;
+}
+
+#frotateG_01{
+    left:0;
+    top:51px;
+    animation-delay:0.45s;
+    -o-animation-delay:0.45s;
+    -ms-animation-delay:0.45s;
+    -webkit-animation-delay:0.45s;
+    -moz-animation-delay:0.45s;
+}
+
+#frotateG_02{
+    left:15px;
+    top:15px;
+    animation-delay:0.6s;
+    -o-animation-delay:0.6s;
+    -ms-animation-delay:0.6s;
+    -webkit-animation-delay:0.6s;
+    -moz-animation-delay:0.6s;
+}
+
+#frotateG_03{
+    left:51px;
+    top:0;
+    animation-delay:0.75s;
+    -o-animation-delay:0.75s;
+    -ms-animation-delay:0.75s;
+    -webkit-animation-delay:0.75s;
+    -moz-animation-delay:0.75s;
+}
+
+#frotateG_04{
+    right:15px;
+    top:15px;
+    animation-delay:0.9s;
+    -o-animation-delay:0.9s;
+    -ms-animation-delay:0.9s;
+    -webkit-animation-delay:0.9s;
+    -moz-animation-delay:0.9s;
+}
+
+#frotateG_05{
+    right:0;
+    top:51px;
+    animation-delay:1.05s;
+    -o-animation-delay:1.05s;
+    -ms-animation-delay:1.05s;
+    -webkit-animation-delay:1.05s;
+    -moz-animation-delay:1.05s;
+}
+
+#frotateG_06{
+    right:15px;
+    bottom:15px;
+    animation-delay:1.2s;
+    -o-animation-delay:1.2s;
+    -ms-animation-delay:1.2s;
+    -webkit-animation-delay:1.2s;
+    -moz-animation-delay:1.2s;
+}
+
+#frotateG_07{
+    left:51px;
+    bottom:0;
+    animation-delay:1.35s;
+    -o-animation-delay:1.35s;
+    -ms-animation-delay:1.35s;
+    -webkit-animation-delay:1.35s;
+    -moz-animation-delay:1.35s;
+}
+
+#frotateG_08{
+    left:15px;
+    bottom:15px;
+    animation-delay:1.5s;
+    -o-animation-delay:1.5s;
+    -ms-animation-delay:1.5s;
+    -webkit-animation-delay:1.5s;
+    -moz-animation-delay:1.5s;
+}
+
+
+
+@keyframes f_fadeG{
+    0%{
+        background-color:rgb(0,0,0);
+    }
+
+    100%{
+        background-color:rgb(255,255,255);
+    }
+}
+
+@-o-keyframes f_fadeG{
+    0%{
+        background-color:rgb(0,0,0);
+    }
+
+    100%{
+        background-color:rgb(255,255,255);
+    }
+}
+
+@-ms-keyframes f_fadeG{
+    0%{
+        background-color:rgb(0,0,0);
+    }
+
+    100%{
+        background-color:rgb(255,255,255);
+    }
+}
+
+@-webkit-keyframes f_fadeG{
+    0%{
+        background-color:rgb(0,0,0);
+    }
+
+    100%{
+        background-color:rgb(255,255,255);
+    }
+}
+
+@-moz-keyframes f_fadeG{
+    0%{
+        background-color:rgb(0,0,0);
+    }
+
+    100%{
+        background-color:rgb(255,255,255);
+    }
+}

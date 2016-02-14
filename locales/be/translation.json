@@ -1,0 +1,60 @@
+{
+    "title": "Safe Home",
+
+    "nav": {
+        "logOut": "Log Out",
+        "logIn": "Go to Log In page",
+        "signOut": "Delete my account",
+        "signUp": "Go to Sign Up page",
+        "submit": "Submit form"
+    },
+
+    "conf": {
+        "confirmDeleteAccount": "Your account will be deleted. Continue?"
+    },
+
+    "text": {
+        "password": "Enter password:",
+        "newPassword": "Enter new password:",
+        "confirmPassword": "Repeat password:",
+        "forgotPassword": "Forgot password?",
+        "email": "Enter Email:",
+        "inputName": "Your name:",
+        "invalidEmailOrPassword": "Wrong password or Email!",
+        "suchUserExists": "User with such Email already exists!",
+        "itIsLoginPage": "Fill in this form to Log In",
+        "itIsSignupPage": "Fill in this form to Sign Up",
+        "upgradeYourBrowser": "This version of IE is not supported. Please, upgrade it.",
+        "invalidRecaptcha": "ReCaptcha failed, try again.",
+        "inputLength": "From 6 to 50 characters.",
+        "passwordsNotMatch": "Your passwords did not match!",
+        "suchUserExists": "Пользователь с таким Email уже зарегистрирован!",
+        "noSuchEmailAccount": "No account with such email address exists.",
+        "passwordForgotInstructions1": [
+            "You are receiving this message because you (or someone else)",
+            "have requested the reset of the password for your account.",
+            "If it was you and you want to continue,",
+            "please, click on the following link or paste it into your browser to complete the process:"
+        ],
+        "passwordForgotInstructions2": [
+            "If you did not request this, please, ignore this email and your password will remain unchanged."
+        ],
+        "emailSentTo": "An email with further instructions has been sent to ",
+        "emailSentTo2": " If you do not see it, please, check the spam box.",
+        "invalidToken": "Password reset link is invalid or has expired.",
+        "passwordChanged": "Your password has been changed.",
+        "passwordChangeNotification": [
+            "This is a confirmation that the password for your account on Learnwords has just been changed."
+        ],
+        "passwordReset": "Learnwords Password Reset.",
+        "confirmEmail": "Confirm your registration on Learnwords.",
+        "confirmRegistration": [
+            "You are receiving this message because you (or someone else)",
+            "wants to get registered on Learnwords with your email.",
+            "If it was you and you want to complete the process,",
+            "please, click on the following link or put it into your browser, otherwise just ignore this letter:"
+        ],
+        "registrationCompleted": "Registration completed successfully.",
+        "registrationCompletedSuccessfully": "Registration on Learnwords completed successfully."
+    }
+}

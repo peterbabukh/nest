@@ -1,0 +1,19 @@
+{
+   "port": 3000,
+   "mongoose": {
+       "uri": "mongodb://localhost:27017/data"
+   },
+   "session": {
+       "secret": "f'[8dEe;-]d4lf9{xcLGH'+d3D}]K3jhkFl78+-7df",
+       "key": "sid",
+       "cookie": {
+           "path": "/",
+           "httpOnly": true,
+           "maxAge": null,
+           "secure": false
+       },
+       "rolling": true,
+       "resave": false,
+       "saveUninitialized": false
+   }
+}
