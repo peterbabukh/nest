@@ -10,7 +10,19 @@
 			<div class="jumbotron">
 				<div class="container text-center msg-right">
 					<h2>Everything is SAFE</h2>
-					<p>Want to change settings?</p>
+					<p>The state is set to <span class="home-state">state</span></p>
+					<div class="container">
+						<form role="form" name="changeState">
+							<div class="form-group">
+								<label for="setStateSel">Change the state:</label>
+								<select class="form-control" id="setStateSel">
+									<option value="home">Home</option>
+									<option value="away">Away</option>
+									<option value="auto-away">Auto-away</option>
+								</select>
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
 
