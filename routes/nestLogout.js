@@ -1,36 +1,26 @@
-var User = require('../models/User').User;
 var https = require('https');
 
 exports.get = function(req, res) {
     var token = req.cookies['nest_token'];
-
     if (token) {
-
         var reqOpts = {
             hostname: 'api.home.nest.com',
             path: '/oauth2/access_tokens/' + token,
             method: 'DELETE'
         };
 
-        https.request(reqOpts, function(res) {
+        https.request(reqOpts, function(revokeRes) {
 
-            console.log(res);
-            console.log(req);
+            res.clearCookie('nest_token');
+            return res.redirect('/home');
 
         }).on('error', function() {
 
             res.send('Log out failed. Please try again.');
-        }).on('end', function() {
-
-            res.clearCookie('nest_token');
-            return res.redirect('/home');
-        });
-
-
-
+        }).end();
     } else {
 
-        res.redirect('/');
+        res.redirect('/home');
     }
 };
 

@@ -2,15 +2,15 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title><%= t('title') %></title>
-    <link rel="stylesheet" type="text/css" href="/css/nest.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= t('title') %></title>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+    <link rel="stylesheet" href="/assets/fonts/LCDBOLD/font.css">
+    <link rel="stylesheet" type="text/css" href="/css/nest.css" />
     <script type="text/javascript" src="/js/lib/jquery-2.1.4.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="/js/lib/js.cookie.js"></script>
+    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
     <!-- <script type="text/javascript" src="/req/nest.js"></script> -->
     <script data-main="./js/main.js" src="./js/lib/require-2.1.20.js"></script>
 </head>
@@ -20,8 +20,8 @@
     <%= t('text.upgradeYourBrowser') %>
 </div>
 <![endif]-->
-<div class="layout-box">
-    <div class="content-box">
+<div class="layout-box row">
+    <div class="content-box col-sm-12">
         <!-- CSS spinner -->
         <div id="floatingCirclesG">
             <div class="f_circleG" id="frotateG_01"></div>
@@ -36,7 +36,6 @@
     </div>
 </div>
 
-<!--<script src="/js/lib/streaming.js"></script>-->
 
 </body>
 </html>
