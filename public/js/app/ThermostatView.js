@@ -12,265 +12,160 @@ define( function(require) {
         initialize: function (options) {
             this.childViews = [];
 			this.token = options.token;
-			this.dataRef = options.dataRef;
         },
 
         events: {
-
+            'click #up-button': 'upButton',
+            'click #down-button': 'downButton',
+            'click #heating-up-button-heat': 'heatingUpButtonHeat',
+            'click #heating-down-button': 'heatingDownButton',
+            'click #cooling-up-button': 'coolingUpButton',
+            'click #cooling-down-button': 'coolingDownButton'
         },
 
         render: function () {
             //this.onClose();
             this.$el.html( this.template() );
-			this.setThermostat();
+            this.setFirebase();
             return this;
         },
 
-        // sets thermostat
-        setThermostat: function() {
-		
-			var nestToken  = this.token,
-				thermostat = {},
-				structure  = {};
+        upButton: function () {
+            var scale = this.thermostat.temperature_scale,
+                adjustment = scale === 'F' ? +1 : +0.5;
+            this.adjustTemperature(adjustment, scale);
+        },
 
-			if (nestToken) { // Simple check for token
+        downButton: function() {
+            var scale = this.thermostat.temperature_scale,
+                adjustment = scale === 'F' ? -1 : -0.5;
+            this.adjustTemperature(adjustment, scale);
+        },
 
-			  // Create a reference to the API using the provided token
-			  var dataRef = this.dataRef;
-			  //dataRef.auth(nestToken);
+        heatingUpButtonHeat: function () {
+            var scale = this.thermostat.temperature_scale,
+                adjustment = scale === 'F' ? +1 : +0.5;
+            this.adjustTemperature(adjustment, scale, 'heat');
+        },
 
+        coolingUpButton: function () {
+            var scale = this.thermostat.temperature_scale,
+                adjustment = scale === 'F' ? +1 : +0.5;
+            this.adjustTemperature(adjustment, scale, 'cool');
+        },
 
-			} else {
-			  // No auth token, go get one
-			  window.location.replace('/auth/nest');
-			}
+        heatingDownButton: function () {
+            var scale = thermostat.temperature_scale,
+                adjustment = scale === 'F' ? -1 : -0.5;
+            adjustTemperature(adjustment, scale, 'heat');
+        },
 
-			/**
-			  The appropriate version of target temperature to display is based on
-			  the following parameters:
+        coolingDownButton: function () {
+            var scale = this.thermostat.temperature_scale,
+                adjustment = scale === 'F' ? -1 : -0.5;
+            this.adjustTemperature(adjustment, scale, 'cool');
+        },
 
-			  * hvac_mode (C or F)
-			  * temperature_scale (heat-cool, heat, cool, or off)
+        adjustTemperature: function(degrees, scale, type) {
+            scale = scale.toLowerCase();
+            type = type ? type + '_' : '';
 
-			  When hvac_mode is 'heat-cool' we display both the low and the high setpoints like:
+            var dataRef = new Firebase('wss://developer-api.nest.com');
+            dataRef.authWithCustomToken( this.token, function(error, authData) {
+                if (error) {
+                    console.log("Authentication Failed!", error);
+                }
+            });
 
-				68 • 80° F
+            var newTemp = this.thermostat['target_temperature_' + scale] + degrees,
+                path = 'devices/thermostats/' + this.thermostat.device_id + '/target_temperature_' + type + scale;
 
-			  For 'heat' or 'cool' just the temperature is displayed
+            if (this.thermostat.is_using_emergency_heat) {
+                console.error("Can't adjust target temperature while using emergency heat.");
+            } else if (this.thermostat.hvac_mode === 'heat-cool' && !type) {
+                console.error("Can't adjust target temperature while in Heat â€¢ Cool mode, use target_temperature_high/low instead.");
+            } else if (type && this.thermostat.hvac_mode !== 'heat-cool') {
+                console.error("Can't adjust target temperature " + type + " while in " + thermostat.hvac_mode +  " mode, use target_temperature instead.");
+            } else if (this.structure.away.indexOf('away') > -1) {
+                console.error("Can't adjust target temperature while structure is set to Away or Auto-away.");
+            } else { // ok to set target temperature
+                dataRef.child(path).set(newTemp);
+            }
+        },
 
-				70° F
+        setFirebase: function() {
+            var self = this;
 
-			  For 'off' we show that the thermostat is off:
+            var dataRef = new Firebase('wss://developer-api.nest.com');
+            dataRef.authWithCustomToken( this.token, function(error, authData) {
+                if (error) {
+                    console.log("Authentication Failed!", error);
+                }
+            });
 
-				OFF
+            dataRef.on('value', function (snapshot) {
+                var data = snapshot.val();
 
-			  Away modes are handled separately
+                // For simplicity, we only care about the first
+                // thermostat in the first structure
+                self.structure = self.firstChild(data.structures);
+                self.thermostat = data.devices.thermostats[self.structure.thermostats[0]];
 
-			  @method
-			  @param object thermostat model
-			  @returns undefined
-			*/
-			function updateTemperatureDisplay (thermostat) {
-			  var scale = thermostat.temperature_scale.toLowerCase();
+                // TAH-361, device_id does not match the device's path ID
+                thermostat.device_id = self.structure.thermostats[0];
 
-			  // For Heat • Cool mode, we display a range of temperatures
-			  // we support displaying but not changing temps in this mode
-			  if (thermostat.hvac_mode === 'heat-cool') {
-				$('#target-temperature .temp').text(
-				  thermostat['target_temperature_low_' + scale] + ' • ' +
-				  thermostat['target_temperature_high_' + scale]
-				 );
+                self.updateThermostatView( self.thermostat );
+                self.updateStructureView( self.structure );
 
-			  // Display the string 'off' when the thermostat is turned off
-			  } else if (thermostat.hvac_mode === 'off') {
-				$('#target-temperature .temp').text('off');
+            });
+        },
 
-			  // Otherwise just display the target temperature
-			  } else {
-				$('#target-temperature .temp').text(thermostat['target_temperature_' + scale] + '°');
-				$('#heating-up-button, #heating-down-button, #cooling-up-button, #cooling-down-button').hide();
-			  }
+        updateThermostatView: function (thermostat) {
+            var scale = thermostat.temperature_scale;
 
-			  // Update ambient temperature display
-			  $('#ambient-temperature .temp').text(thermostat['ambient_temperature_' + scale] + '°');
-			}
+            $('.temperature-scale').text(scale);
+            $('#target-temperature .hvac-mode').text(thermostat.hvac_mode);
+            $('#device-name').text(thermostat.name);
+            this.updateTemperatureDisplay(thermostat);
+        },
 
-			/**
-			  Updates the thermostat view with the latests data
+        updateStructureView: function (structure) {
+            if (structure.away === 'home') {
+                $('#target-temperature').addClass('home');
+            } else {
+                $('#target-temperature').removeClass('home');
+            }
+        },
 
-			  * Temperature scale
-			  * HVAC mode
-			  * Target and ambient temperatures
-			  * Device name
+        firstChild: function (object) {
+            for(var key in object) {
+                return object[key];
+            }
+        },
 
-			  @method
-			  @param object thermostat model
-			  @returns undefined
-			*/
-			function updateThermostatView(thermostat) {
-			  var scale = thermostat.temperature_scale;
+        updateTemperatureDisplay: function (thermostat) {
+            var scale = thermostat.temperature_scale.toLowerCase();
 
-			  $('.temperature-scale').text(scale);
-			  $('#target-temperature .hvac-mode').text(thermostat.hvac_mode);
-			  $('#device-name').text(thermostat.name);
-			  updateTemperatureDisplay(thermostat);
-			}
+            // For Heat â€¢ Cool mode, we display a range of temperatures
+            // we support displaying but not changing temps in this mode
+            if (thermostat.hvac_mode === 'heat-cool') {
+                $('#target-temperature .temp').text(
+                    thermostat['target_temperature_low_' + scale] + ' â€¢ ' +
+                    thermostat['target_temperature_high_' + scale]
+                );
 
-			/**
-			  Updates the structure's home/away state by
-			  adding the class 'home' when the structure is
-			  set to home, and removing it when in any away state
+                // Display the string 'off' when the thermostat is turned off
+            } else if (thermostat.hvac_mode === 'off') {
+                $('#target-temperature .temp').text('off');
 
-			  @method
-			  @param object structure
-			  @returns undefined
-			*/
-			function updateStructureView (structure) {
-			  if (structure.away === 'home') {
-				$('#target-temperature').addClass('home');
-			  } else {
-				$('#target-temperature').removeClass('home');
-			  }
-			}
+                // Otherwise just display the target temperature
+            } else {
+                $('#target-temperature .temp').text(thermostat['target_temperature_' + scale] + 'Â°');
+                $('#heating-up-button, #heating-down-button, #cooling-up-button, #cooling-down-button').hide();
+            }
 
-			/**
-			  Updates the thermostat's target temperature
-			  by the specified number of degrees in the
-			  specified scale. If a type is specified, it
-			  will be used to set just that target temperature
-			  type
-
-			  @method
-			  @param Number degrees
-			  @param String temperature scale
-			  @param String type, high or low. Used in heat-cool mode (optional)
-			  @returns undefined
-			*/
-			function adjustTemperature(degrees, scale, type) {
-			  scale = scale.toLowerCase();
-			  type = type ? type + '_' : '';
-			  var newTemp = thermostat['target_temperature_' + scale] + degrees,
-				  path = 'devices/thermostats/' + thermostat.device_id + '/target_temperature_' + type + scale;
-
-			  if (thermostat.is_using_emergency_heat) {
-				console.error("Can't adjust target temperature while using emergency heat.");
-			  } else if (thermostat.hvac_mode === 'heat-cool' && !type) {
-				console.error("Can't adjust target temperature while in Heat • Cool mode, use target_temperature_high/low instead.");
-			  } else if (type && thermostat.hvac_mode !== 'heat-cool') {
-				console.error("Can't adjust target temperature " + type + " while in " + thermostat.hvac_mode +  " mode, use target_temperature instead.");
-			  } else if (structure.away.indexOf('away') > -1) {
-				console.error("Can't adjust target temperature while structure is set to Away or Auto-away.");
-			  } else { // ok to set target temperature
-				dataRef.child(path).set(newTemp);
-			  }
-			}
-
-			/**
-			  When the user clicks the up button,
-			  adjust the temperature up 1 degree F
-			  or 0.5 degrees C
-
-			*/
-			$('#up-button').on('click', function () {
-			  var scale = thermostat.temperature_scale,
-				  adjustment = scale === 'F' ? +1 : +0.5;
-			  adjustTemperature(adjustment, scale);
-			});
-
-			/**
-			  When the user clicks the down button,
-			  adjust the temperature down 1 degree F
-			  or 0.5 degrees C
-
-			*/
-			$('#down-button').on('click', function () {
-			  var scale = thermostat.temperature_scale,
-				  adjustment = scale === 'F' ? -1 : -0.5;
-			  adjustTemperature(adjustment, scale);
-			});
-
-			/**
-			  When the user clicks the heating up button,
-			  adjust the temperature up 1 degree F
-			  or 0.5 degrees C
-
-			*/
-			$('#heating-up-button-heat').on('click', function () {
-			  var scale = thermostat.temperature_scale,
-				  adjustment = scale === 'F' ? +1 : +0.5;
-			  adjustTemperature(adjustment, scale, 'heat');
-			});
-
-			/**
-			  When the user clicks the heating down button,
-			  adjust the temperature down 1 degree F
-			  or 0.5 degrees C
-
-			*/
-			$('#heating-down-button').on('click', function () {
-			  var scale = thermostat.temperature_scale,
-				  adjustment = scale === 'F' ? -1 : -0.5;
-			  adjustTemperature(adjustment, scale, 'heat');
-			});
-
-			/**
-			  When the user clicks the cooling up button,
-			  adjust the temperature up 1 degree F
-			  or 0.5 degrees C
-
-			*/
-			$('#cooling-up-button').on('click', function () {
-			  var scale = thermostat.temperature_scale,
-				  adjustment = scale === 'F' ? +1 : +0.5;
-			  adjustTemperature(adjustment, scale, 'cool');
-			});
-
-			/**
-			  When the user clicks the cooling down button,
-			  adjust the temperature down 1 degree F
-			  or 0.5 degrees C
-
-			*/
-			$('#cooling-down-button').on('click', function () {
-			  var scale = thermostat.temperature_scale,
-				  adjustment = scale === 'F' ? -1 : -0.5;
-			  adjustTemperature(adjustment, scale, 'cool');
-			});
-
-			/**
-			  Utility method to return the first child
-			  value of the passed in object.
-
-			  @method
-			  @param object
-			  @returns object
-			*/
-			function firstChild(object) {
-			  for(var key in object) {
-				return object[key];
-			  }
-			}
-
-			/**
-			  Start listening for changes on this account,
-			  update appropriate views as data changes.
-
-			*/
-			dataRef.on('value', function (snapshot) {
-			  var data = snapshot.val();
-
-			  // For simplicity, we only care about the first
-			  // thermostat in the first structure
-			  structure = firstChild(data.structures),
-			  thermostat = data.devices.thermostats[structure.thermostats[0]];
-
-			  // TAH-361, device_id does not match the device's path ID
-			  thermostat.device_id = structure.thermostats[0];
-
-			  updateThermostatView(thermostat);
-			  updateStructureView(structure);
-
-			});
+            // Update ambient temperature display
+            $('#ambient-temperature .temp').text(thermostat['ambient_temperature_' + scale] + 'Â°');
         },
 
         // Removes children views and their children views from DOM and thus prevents memory leaks

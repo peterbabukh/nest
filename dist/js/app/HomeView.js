@@ -8,7 +8,6 @@ define( function(require) {
     var appHeaderTmpl = require('text!../../templates/appHeaderTmpl.html');
     var AppHeaderView = require('app/AppHeaderView');
     var DashboardView = require('app/DashboardView');
-    var NestModel = require('app/NestModel');
 
     var Home = Backbone.View.extend({
 
@@ -22,13 +21,13 @@ define( function(require) {
 
         initialize: function () {
             this.childViews = [];
-            this.model = {};
+
         },
 
         render: function () {
-            //this.onClose();
+            var self = this;
             this.checkToken();
-            this.$el.html(this.template(i18n));
+            this.$el.html(self.template());
             this.appendHeader();
             this.appendDashboardView();
             this.getFirebase();
@@ -37,22 +36,17 @@ define( function(require) {
         },
 
         checkToken: function () {
-
             // Get auth token from cookie.
             var token = Cookies.get('nest_token');
 
             if ( token ) {
-                // Create a reference to the API using the provided token
-                //var dataRef = new Firebase('https://developer-api.nest.com');
-                //var dataRef = new Firebase('wss://developer-api.nest.com');
-                //dataRef.auth( token );
-
                 this.token = token;
 
             } else {
                 // No auth token, go get one
                 window.location.replace('/auth/nest');
             }
+
         },
 
         appendHeader: function () {
@@ -64,13 +58,17 @@ define( function(require) {
         },
 
         appendDashboardView: function () {
-            var dashboardView = new DashboardView();
+            var dashboardView = new DashboardView({
+                token: this.token
+            });
+
             $('.dashboard').html(dashboardView.render().el);
             // need it to remove this view upon removal of this.$el
             this.childViews.push(dashboardView);
         },
 
         // added for testing purposes to see the way firebase works
+        // TODO: will be deleted
         getFirebase: function () {
 
             var myDataRef = new Firebase('https://safe-home.firebaseio.com/');
@@ -129,12 +127,11 @@ define( function(require) {
                 var cameras = devices.cameras || {};
                 var structures = data.structures || {};
 
-                self.model = new NestModel(data);
-                self.model.on('change', self.updateNest, self);
+                self.structuresId =  _.keys(structures);
 
                 // updates devices info
                 self.updateDevices(thermostats, smokeAlarms, cameras);
-                self.changeState();
+                self.changeState( structures );
 
             });
 
@@ -174,7 +171,7 @@ define( function(require) {
         },
 
         // updates each device data
-        // TODO: pass this function to DashboardView and trigger it by model onchange event.
+        // TODO: pass this function to DashboardView and trigger it by model onchange event
         updateDevices: function (thermostats, smokeAlarms, cameras) {
 
             var arr = [thermostats, smokeAlarms, cameras];
@@ -211,21 +208,37 @@ define( function(require) {
 
         },
 
-        changeState: function () {
-            var structures = this.model.get('structures');
+        // changes Home/Away state display upon data fetch
+        changeState: function (structures) {
+
             var state = structures[_.keys(structures)].away;
 
-            $('.home-state').text(state);
+            $('.home-state').text(state).show();
+            $('#setStateSel option[value="' + state + '"]').attr('selected', 'selected');
 
         },
 
+        // sets new Home/Away state upon select change
         setState: function () {
 
-            var chosenValue = $('#changeStateSel :selected').val();
-            var structures = this.model.get('structures');
-            var structuresId = _.keys(structures);
+            var chosenValue = $('.dashboard').find('#setStateSel option:selected').val().toLowerCase().trim();
 
-            this.model.set(structures[structuresId].away, chosenValue);
+            this.updateNest(this.structuresId, chosenValue);
+
+        },
+
+        // updates Nest model
+        updateNest: function (id, newValue) {
+
+            var dataRef = new Firebase('wss://developer-api.nest.com');
+            dataRef.authWithCustomToken( this.token, function(error, authData) {
+                if (error) {
+                    console.log("Authentication Failed!", error);
+                }
+            });
+
+            var path = 'structures/' + id + '/away';
+            dataRef.child(path).set(newValue);
 
         },
 
@@ -239,13 +252,12 @@ define( function(require) {
             this.childViews.length = 0;
         },
 
-        /*
-        // updates Nest model
-        updateNest: function () {
-
-
+        firstChild: function (object) {
+            for(var key in object) {
+                return object[key];
+            }
         }
-        */
+
 
     });
 

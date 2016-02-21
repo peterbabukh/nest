@@ -10,7 +10,7 @@
 			<div class="jumbotron">
 				<div class="container text-center msg-right">
 					<h2>Everything is SAFE</h2>
-					<p>The state is set to <span class="home-state">state</span></p>
+					<p>The state is set to: <span class="home-state"></span></p>
 					<div class="container">
 						<form role="form" name="changeState">
 							<div class="form-group">
@@ -18,7 +18,6 @@
 								<select class="form-control" id="setStateSel">
 									<option value="home">Home</option>
 									<option value="away">Away</option>
-									<option value="auto-away">Auto-away</option>
 								</select>
 							</div>
 						</form>
@@ -27,20 +26,9 @@
 			</div>
 
 
-			<!-- TODO: replace with template -->
-			<p class="msg-wrong">The below block is not programmed yet to be created dinamically.</p>
 			<div class="row">
-				<div class="col-sm-4">
-					<p>Kitchen</p>
-					<img src="http://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-				</div>
-				<div class="col-sm-4">
-					<p>Hall</p>
-					<img src="http://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
-				</div>
-				<div class="col-sm-4">
-					<p>Parents' Bedroom</p>
-					<img src="http://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image">
+				<div class="col-sm-12">
+					<div id="thermostat-container"></div>
 				</div>
 			</div>
 			<br /><br />
