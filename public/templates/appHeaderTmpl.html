@@ -1,10 +1,12 @@
-<div class="app-header">
-	<a href="/logout"><%= nav.logOut %></a>
-	<span class="division"> | </span>
-	<a class="signout-btn"><%= nav.signOut %></a>
-</div>
-<div class="connection-state">
-	<span><%= nav.connectionState %></span>
-    <img id="connect-state-img" src="/assets/img/gray-state.png">
-    <a href="/nest/logout" class="signin-nest"><%= nav.disconnect %></a>
+<div class="row">
+    <div class="connection-state col-sm-6">
+        <span><%= nav.connectionState %></span>
+        <img id="connect-state-img" src="/assets/img/gray-state.png">
+        <a href="/nest/logout" class="signin-nest"><%= nav.disconnect %></a>
+    </div>
+	<div class="app-header col-sm-6">
+		<a href="/logout"><%= nav.logOut %></a>
+		<span class="division"> | </span>
+		<a class="signout-btn"><%= nav.signOut %></a>
+	</div>
 </div>

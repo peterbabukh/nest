@@ -7,8 +7,15 @@
   },
   "main": "server.js",
   "keywords": [
-    "nodejs project",
-    "nest"
+    "nodejs",
+    "express",
+    "nest",
+    "firebase",
+    "mongodb",
+    "mongoose",
+    "mailgun",
+    "backbone",
+    "requirejs"
   ],
   "engines": {
     "node": "4.1.2",
