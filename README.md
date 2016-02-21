@@ -1,11 +1,10 @@
-To launch the app you need to install nodejs, and mongodb.
+This is a sample NODE.JS, EXPRESS project, using FIREBASE to implement connection with NEST API, MongoDB to save user data, 
+MailGun to send out notification emails, BACKBONE and REQUIREJS as front end frameworks.
 
-Start the db and load the app by 
-npm install
-command.
+It shows the magic of immediate update of information in either Nest API or client API upon any changes in 
+either of these applications.
 
-node server.js 
-command will get it started.
+Please, watch DemoVideo and DemoVideo_Part-2.
 
 
 

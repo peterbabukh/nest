@@ -10,9 +10,9 @@ i18n.init({
     supportedLngs: ['ru', 'en', 'be'],
     detectLngFromPath: false,
     ignoreRoutes: [],
-    lng: process.env.NODE_LANG || 'ru',
+    lng: process.env.NODE_LANG || 'en',
     saveMissing:   false,
-    sendMissingTo: 'ru'
+    sendMissingTo: 'en'
 });
 app.use(i18n.handle);
 // Registers AppHelper so you can use the translate function inside template
