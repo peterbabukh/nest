@@ -69,8 +69,8 @@ exports.post = function(req, res) {
 					// This is the API key that you retrieve from www.mailgun.com
 					var auth = {
 						auth: {
-							api_key: 'key-7a7bac10c61cd20aded2192fbbd65232',
-							domain: 'sandbox3c18cfecd88743599362df5d8b3d25fc.mailgun.org'
+							api_key: 'api_key',
+							domain: 'domain'
 						}
 					};
 
@@ -78,7 +78,7 @@ exports.post = function(req, res) {
 
 					nodemailerMailgun.sendMail({
 
-						from: 'mailgun@sandbox3c18cfecd88743599362df5d8b3d25fc.mailgun.org',
+						from: 'from',
 						to: user.email, // An array if you have multiple recipients.
 						subject: i18n.t('text.passwordReset'),
 						text: i18n.t( 'text.passwordChangeNotification' )
