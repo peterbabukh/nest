@@ -137,15 +137,15 @@ module.exports = function (app) {
 									// This is the API key that you retrieve from www.mailgun.com/cp
 									var auth = {
 										auth: {
-											api_key: 'key-7a7bac10c61cd20aded2192fbbd65232',
-											domain: 'sandbox3c18cfecd88743599362df5d8b3d25fc.mailgun.org'
+											api_key: 'api_key',
+											domain: 'domain'
 										}
 									};
 
 									var nodemailerMailgun = nodemailer.createTransport(mg(auth));
 
 									nodemailerMailgun.sendMail({
-										from: 'mailgun@sandbox3c18cfecd88743599362df5d8b3d25fc.mailgun.org',
+										from: 'from',
 										to: tempUser.email, // An array if you have multiple recipients.
 										subject: i18n.t('text.confirmEmail'),
 										html: '<div>' + i18n.t('text.confirmRegistration') + '<br /><br />' +
@@ -176,8 +176,8 @@ module.exports = function (app) {
 
     passport.use('nest', new NestStrategy({
         // Read credentials from your environment variables.
-        clientID: process.env.NEST_ID || '65d8a7f7-d818-4231-a2c8-bf7ff5b65672',
-        clientSecret: process.env.NEST_SECRET || 'YsexZbOvfYSuiFG8oHLFkELj3'
+        clientID: process.env.NEST_ID || 'clientID',
+        clientSecret: process.env.NEST_SECRET || 'clientSecret'
     }));
 
 	app.use(passport.initialize());
